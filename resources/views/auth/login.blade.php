@@ -45,6 +45,9 @@
         <div class="text-center mt-4 secure-note">
             <i class="fas fa-shield-alt"></i> Secure access for approved B2B clients
         </div>
+        <div class="text-center mt-2">
+            <a href="{{ url('/admin/login') }}" class="small text-muted">IBA Team Member? Staff Login →</a>
+        </div>
     </div>
 </body>
 </html>

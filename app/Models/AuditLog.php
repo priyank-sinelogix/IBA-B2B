@@ -30,4 +30,14 @@ class AuditLog extends Model
             'created_at' => now(),
         ]);
     }
+
+    public function company()
+    {
+        return $this->belongsTo(\App\Models\Company::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
 }

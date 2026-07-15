@@ -20,9 +20,16 @@ class SampleVersion extends Model
         return $this->belongsTo(User::class, 'uploaded_by');
     }
 
-    // Returns a temporary signed URL instead of a public path (private S3 disk)
+    // Returns a viewable URL for the image. Uses local 'public' disk by default
+    // (works immediately on XAMPP). Switch disk to 's3' in production for signed URLs.
     public function signedImageUrl(int $minutes = 15): string
     {
-        return \Storage::disk('s3')->temporaryUrl($this->image_path, now()->addMinutes($minutes));
+        $disk = config('filesystems.default', 'public');
+
+        if ($disk === 's3') {
+            return \Storage::disk('s3')->temporaryUrl($this->image_path, now()->addMinutes($minutes));
+        }
+
+        return \Storage::disk('public')->url($this->image_path);
     }
 }

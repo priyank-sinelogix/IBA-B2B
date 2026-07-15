@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Web;
+namespace App\Http\Controllers\Admin\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AdminAuthController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login');
+        return view('admin.auth.login');
     }
 
     public function login(Request $request)
@@ -20,19 +20,19 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::attempt($credentials)) {
             return back()->withErrors(['email' => 'Invalid credentials.']);
         }
 
-        if (! Auth::user()->isCustomer()) {
+        if (! Auth::user()->isAdmin()) {
             Auth::logout();
-            return back()->withErrors(['email' => 'This login is for customers only. IBA staff should use Staff Login.']);
+            return back()->withErrors(['email' => 'This login is for IBA staff only. Please use the Customer Login.']);
         }
 
         $request->session()->regenerate();
         Auth::user()->update(['last_login_at' => now()]);
 
-        return redirect()->intended('/dashboard');
+        return redirect()->intended('/admin/dashboard');
     }
 
     public function logout(Request $request)
@@ -41,6 +41,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/admin/login');
     }
 }
